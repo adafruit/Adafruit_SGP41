@@ -43,16 +43,12 @@ void setup(void) {
     Serial.println(F("Failed to read serial number"));
   }
 
-  uint16_t self_test = 0;
-  if (sgp41.executeSelfTest(&self_test)) {
-    if (self_test != 0xD400) {
-      Serial.print(F("Self-test failed: 0x"));
-      Serial.println(self_test, HEX);
-    } else {
-      Serial.println(F("Self-test passed"));
-    }
+  uint16_t self_test = sgp41.executeSelfTest();
+  if (self_test == SGP41_SELF_TEST_OK) {
+    Serial.println(F("Self-test passed"));
   } else {
-    Serial.println(F("Failed to execute self-test"));
+    Serial.print(F("Self-test result: 0x"));
+    Serial.println(self_test, HEX);
   }
 }
 

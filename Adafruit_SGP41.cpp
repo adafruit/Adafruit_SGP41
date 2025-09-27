@@ -34,11 +34,12 @@ Adafruit_SGP41::~Adafruit_SGP41(void) {
  * @return false if communication could not be established.
  */
 bool Adafruit_SGP41::begin(uint8_t addr, TwoWire* wire) {
+  _wire = wire;
+
   if (_i2c_dev) {
     delete _i2c_dev;
     _i2c_dev = nullptr;
   }
-  _wire = wire;
 
   _i2c_dev = new Adafruit_I2CDevice(addr, wire);
   if (!_i2c_dev) {
@@ -48,7 +49,17 @@ bool Adafruit_SGP41::begin(uint8_t addr, TwoWire* wire) {
   if (!_i2c_dev->begin()) {
     delete _i2c_dev;
     _i2c_dev = nullptr;
-    _wire = nullptr;
+    return false;
+  }
+
+  uint16_t serial_number[3];
+  if (!getSerialNumber(serial_number)) {
+    return false;
+  }
+
+  if ((serial_number[0] == serial_number[1]) &&
+      (serial_number[1] == serial_number[2]) &&
+      ((serial_number[0] == 0x0000) || (serial_number[0] == 0xFFFF))) {
     return false;
   }
 
@@ -113,21 +124,25 @@ bool Adafruit_SGP41::measureRawSignals(uint16_t* sraw_voc, uint16_t* sraw_nox,
 
 /**
  * @brief Run the built-in self-test sequence.
- * @param test_result Pointer that will receive the 16-bit test result code.
- * @return true on success, false otherwise.
+ * @return Raw 16-bit test result value, or 0 on failure.
  */
-bool Adafruit_SGP41::executeSelfTest(uint16_t* test_result) {
-  if (!_i2c_dev || !test_result) {
-    return false;
+uint16_t Adafruit_SGP41::executeSelfTest(void) {
+  if (!_i2c_dev) {
+    return 0;
   }
 
   if (!_writeCommand(SGP41_CMD_EXECUTE_SELF_TEST)) {
-    return false;
+    return 0;
   }
 
   delay(SGP41_SELF_TEST_DELAY_MS);
 
-  return _readWords(test_result, 1);
+  uint16_t result = 0;
+  if (!_readWords(&result, 1)) {
+    return 0;
+  }
+
+  return result;
 }
 
 /**

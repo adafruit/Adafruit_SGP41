@@ -54,6 +54,9 @@
 /** I2C general call address for issuing a soft reset. */
 #define SGP41_GENERAL_CALL_ADDR 0x00
 
+/** Expected self-test pass value returned by the sensor. */
+#define SGP41_SELF_TEST_OK 0xD400
+
 /**************************************************************************/
 /*!
     @brief Class for communicating with the Sensirion SGP41 gas sensor.
@@ -74,7 +77,7 @@ class Adafruit_SGP41 {
                          uint16_t relative_humidity = SGP41_DEFAULT_HUMIDITY,
                          uint16_t temperature = SGP41_DEFAULT_TEMPERATURE);
 
-  bool executeSelfTest(uint16_t* test_result);
+  uint16_t executeSelfTest(void);
   bool turnHeaterOff(void);
   bool getSerialNumber(uint16_t serial_number[3]);
   bool softReset(void);
