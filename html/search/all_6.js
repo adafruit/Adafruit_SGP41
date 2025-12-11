@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['sgp41_5fcmd_5fexecute_5fconditioning',['SGP41_CMD_EXECUTE_CONDITIONING',['../_adafruit___s_g_p41_8h.html#a1173d75f3eaf4977f6632f6464c73fe5',1,'Adafruit_SGP41.h']]],
+  ['sgp41_5fcmd_5fexecute_5fself_5ftest',['SGP41_CMD_EXECUTE_SELF_TEST',['../_adafruit___s_g_p41_8h.html#ab05d9e9f5f3e5e915f1b2c400ea82892',1,'Adafruit_SGP41.h']]],
+  ['sgp41_5fcmd_5fget_5fserial_5fnumber',['SGP41_CMD_GET_SERIAL_NUMBER',['../_adafruit___s_g_p41_8h.html#a1db3f1b03ffd28edc4cf6723e11dd335',1,'Adafruit_SGP41.h']]],
+  ['sgp41_5fcmd_5fmeasure_5fraw_5fsignals',['SGP41_CMD_MEASURE_RAW_SIGNALS',['../_adafruit___s_g_p41_8h.html#a20c60e08347416ff8cce83199c305e5a',1,'Adafruit_SGP41.h']]],
+  ['sgp41_5fcmd_5fsoft_5freset',['SGP41_CMD_SOFT_RESET',['../_adafruit___s_g_p41_8h.html#a6ff40725a77b791842209e9c50b109bd',1,'Adafruit_SGP41.h']]],
+  ['sgp41_5fcmd_5fturn_5fheater_5foff',['SGP41_CMD_TURN_HEATER_OFF',['../_adafruit___s_g_p41_8h.html#a9e8a8c29265237595f843c3b7e300920',1,'Adafruit_SGP41.h']]],
+  ['sgp41_5fconditioning_5fdelay_5fms',['SGP41_CONDITIONING_DELAY_MS',['../_adafruit___s_g_p41_8h.html#aa1936c1af3757fa52e84e7caad6d3e2b',1,'Adafruit_SGP41.h']]],
+  ['sgp41_5fdefault_5faddr',['SGP41_DEFAULT_ADDR',['../_adafruit___s_g_p41_8h.html#acea8a11fe76ec439d94e8461f9ccd917',1,'Adafruit_SGP41.h']]],
+  ['sgp41_5fdefault_5fhumidity',['SGP41_DEFAULT_HUMIDITY',['../_adafruit___s_g_p41_8h.html#ac780cc0c5b696c5cc934eba7b734a10e',1,'Adafruit_SGP41.h']]],
+  ['sgp41_5fdefault_5ftemperature',['SGP41_DEFAULT_TEMPERATURE',['../_adafruit___s_g_p41_8h.html#ab98c05c707a8408dcd0d807e9079db58',1,'Adafruit_SGP41.h']]],
+  ['sgp41_5fgeneral_5fcall_5faddr',['SGP41_GENERAL_CALL_ADDR',['../_adafruit___s_g_p41_8h.html#ace8783b71cf7a2b2993ce5a84e06b438',1,'Adafruit_SGP41.h']]],
+  ['sgp41_5fmeasurement_5fdelay_5fms',['SGP41_MEASUREMENT_DELAY_MS',['../_adafruit___s_g_p41_8h.html#af817a7758c1203e4918ba43480c63bba',1,'Adafruit_SGP41.h']]],
+  ['sgp41_5fself_5ftest_5fdelay_5fms',['SGP41_SELF_TEST_DELAY_MS',['../_adafruit___s_g_p41_8h.html#a6a0ea4bffbf8d8d83a5923db13991f2b',1,'Adafruit_SGP41.h']]],
+  ['sgp41_5fself_5ftest_5fnox_5ffail_5fmask',['SGP41_SELF_TEST_NOX_FAIL_MASK',['../_adafruit___s_g_p41_8h.html#a07ed1574c186ddd9071d47ffb08335f9',1,'Adafruit_SGP41.h']]],
+  ['sgp41_5fself_5ftest_5fok',['SGP41_SELF_TEST_OK',['../_adafruit___s_g_p41_8h.html#a0788aeb1b943af730a12e60a2c12c582',1,'Adafruit_SGP41.h']]],
+  ['sgp41_5fself_5ftest_5fvoc_5ffail_5fmask',['SGP41_SELF_TEST_VOC_FAIL_MASK',['../_adafruit___s_g_p41_8h.html#a6f0eaca55b02d7371469d26b0e46f7fb',1,'Adafruit_SGP41.h']]],
+  ['softreset',['softReset',['../class_adafruit___s_g_p41.html#ae334590b0f54b0b2096c17d43d7de52c',1,'Adafruit_SGP41']]]
+];
