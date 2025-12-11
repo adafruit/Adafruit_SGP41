@@ -12,7 +12,7 @@ void setup(void) {
   Serial.println(F("Adafruit SGP41 test"));
 
   if (!sgp41.begin()) {
-    Serial.println(F("Could not find SGP41"));
+    Serial.println(F("Could not find SGP41! Halting."));
     while (1) {
       delay(10);
     }
@@ -23,17 +23,17 @@ void setup(void) {
   // Perform a soft reset
   Serial.println(F("Performing soft reset..."));
   if (!sgp41.softReset()) {
-    Serial.println(F("Soft reset failed!"));
+    Serial.println(F("Soft reset failed! Halting."));
     while (1) {
       delay(10);
     }
   }
   Serial.println(F("Soft reset successful."));
-  delay(10); // Give it a moment to reset
+  delay(20); // Give it a moment to reset and come back to idle mode
 
-  // Re-initialize and read serial number
+  // Re-initialize after reset
   if (!sgp41.begin()) {
-    Serial.println(F("Could not find SGP41 after reset"));
+    Serial.println(F("Could not find SGP41 after reset! Halting."));
     while (1) {
       delay(10);
     }
@@ -50,7 +50,10 @@ void setup(void) {
     }
     Serial.println();
   } else {
-    Serial.println(F("Failed to read serial number!"));
+    Serial.println(F("Failed to read serial number! Halting."));
+    while (1) {
+      delay(10);
+    }
   }
 
   // Self Test
@@ -69,11 +72,14 @@ void setup(void) {
       Serial.print(F("NOx pixel failed! "));
     }
     if (!((self_test_result & SGP41_SELF_TEST_VOC_FAIL_MASK) || (self_test_result & SGP41_SELF_TEST_NOX_FAIL_MASK))) {
-        Serial.print(F("Unknown failure. ")); // Should not happen if bits 0 or 1 indicate failure
+        Serial.print(F("Unknown failure. "));
     }
-    Serial.println();
+    Serial.println(F("Halting."));
+    while (1) {
+        delay(10);
+    }
   }
-
+  
   // Execute conditioning
   Serial.println(F("Executing conditioning..."));
   uint16_t sraw_voc;
@@ -81,21 +87,31 @@ void setup(void) {
     Serial.print(F("Conditioning successful, SRAW_VOC: 0x"));
     Serial.println(sraw_voc, HEX);
   } else {
-    Serial.println(F("Conditioning failed!"));
+    Serial.println(F("Conditioning failed! Halting."));
+    while (1) {
+      delay(10);
+    }
   }
+
+  Serial.println(F("Waiting 7 seconds before starting measurements..."));
+  delay(7000); // Wait 7 seconds after conditioning
+
+  Serial.println(F("Setup complete. Starting measurement loop."));
 }
 
 void loop(void) {
-  uint16_t sraw_voc, sraw_nox;
+  uint16_t sraw_voc = 0; 
+  uint16_t sraw_nox = 0; 
 
   // Measure with default 50% RH and 25 degrees C compensation
+  // Uses a non-blocking delay pattern, but delay(1000) at end makes it 1s intervals.
   if (sgp41.measureRawSignals(&sraw_voc, &sraw_nox)) {
-    Serial.print(F("SRAW_VOC: 0x"));
-    Serial.print(sraw_voc, HEX);
-    Serial.print(F(", SRAW_NOX: 0x"));
-    Serial.println(sraw_nox, HEX);
+    Serial.print(F("Raw VOC: "));
+    Serial.print(sraw_voc, DEC);
+    Serial.print(F("\tRaw NOx: "));
+    Serial.println(sraw_nox, DEC);
   } else {
     Serial.println(F("Measurement failed!"));
   }
-  delay(1000);
+  delay(1000); // 1 second gap between measurements
 }
