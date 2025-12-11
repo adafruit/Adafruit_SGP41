@@ -69,18 +69,20 @@ bool Adafruit_SGP41::begin(uint8_t addr, TwoWire* wire) {
 /**
  * @brief Execute the SGP41 conditioning command.
  * @param sraw_voc Pointer that will receive the VOC raw ticks.
- * @param default_rh Humidity compensation word to transmit.
- * @param default_t Temperature compensation word to transmit.
+ * @param default_rh Humidity in % (0-100).
+ * @param default_t Temperature in degrees C (-45 to 130).
  * @return true on success, false otherwise.
  */
-bool Adafruit_SGP41::executeConditioning(uint16_t* sraw_voc,
-                                         uint16_t default_rh,
-                                         uint16_t default_t) {
+bool Adafruit_SGP41::executeConditioning(uint16_t* sraw_voc, float default_rh,
+                                         float default_t) {
   if (!_i2c_dev || !sraw_voc) {
     return false;
   }
 
-  uint16_t payload[2] = {default_rh, default_t};
+  uint16_t rh_ticks = humidityToTicks(default_rh);
+  uint16_t t_ticks = temperatureToTicks(default_t);
+
+  uint16_t payload[2] = {rh_ticks, t_ticks};
   if (!_writeCommand(SGP41_CMD_EXECUTE_CONDITIONING, payload, 2)) {
     return false;
   }
@@ -94,18 +96,21 @@ bool Adafruit_SGP41::executeConditioning(uint16_t* sraw_voc,
  * @brief Measure raw VOC and NOx signals from the sensor.
  * @param sraw_voc Pointer that will receive the VOC raw ticks.
  * @param sraw_nox Pointer that will receive the NOx raw ticks.
- * @param relative_humidity Humidity compensation word.
- * @param temperature Temperature compensation word.
+ * @param relative_humidity Humidity in % (0-100).
+ * @param temperature Temperature in degrees C (-45 to 130).
  * @return true on success, false otherwise.
  */
 bool Adafruit_SGP41::measureRawSignals(uint16_t* sraw_voc, uint16_t* sraw_nox,
-                                       uint16_t relative_humidity,
-                                       uint16_t temperature) {
+                                       float relative_humidity,
+                                       float temperature) {
   if (!_i2c_dev || !sraw_voc || !sraw_nox) {
     return false;
   }
 
-  uint16_t payload[2] = {relative_humidity, temperature};
+  uint16_t rh_ticks = humidityToTicks(relative_humidity);
+  uint16_t t_ticks = temperatureToTicks(temperature);
+
+  uint16_t payload[2] = {rh_ticks, t_ticks};
   if (!_writeCommand(SGP41_CMD_MEASURE_RAW_SIGNALS, payload, 2)) {
     return false;
   }
@@ -190,18 +195,43 @@ bool Adafruit_SGP41::softReset(void) {
     return false;
   }
 
-  Adafruit_I2CDevice general_call(SGP41_GENERAL_CALL_ADDR, _wire);
-  if (!general_call.begin(false)) {
-    return false;
-  }
+  _wire->beginTransmission(SGP41_GENERAL_CALL_ADDR);
+  _wire->write(SGP41_CMD_SOFT_RESET >> 8);
+  _wire->write(SGP41_CMD_SOFT_RESET & 0xFF);
+  _wire->endTransmission(); // No error check for general call
 
-  uint8_t payload[2] = {0x00, 0x06};
-  if (!general_call.write(payload, sizeof(payload))) {
-    return false;
-  }
-
-  delay(1);
+  delay(20); // Longer delay after reset for device to recover
   return true;
+}
+
+/**************************************************************************/
+/*!
+    @brief Convert relative humidity in % to the sensor's tick format.
+    @param humidity Relative humidity in percent (0-100).
+    @return Humidity value in ticks (0-65535).
+*/
+/**************************************************************************/
+uint16_t Adafruit_SGP41::humidityToTicks(float humidity) {
+  if (humidity < 0)
+    humidity = 0;
+  if (humidity > 100)
+    humidity = 100;
+  return (uint16_t)(humidity * 65535.0f / 100.0f + 0.5f);
+}
+
+/**************************************************************************/
+/*!
+    @brief Convert temperature in degrees Celsius to the sensor's tick format.
+    @param temperature Temperature in degrees Celsius (-45 to 130).
+    @return Temperature value in ticks (0-65535).
+*/
+/**************************************************************************/
+uint16_t Adafruit_SGP41::temperatureToTicks(float temperature) {
+  if (temperature < -45)
+    temperature = -45;
+  if (temperature > 130)
+    temperature = 130;
+  return (uint16_t)((temperature + 45.0f) * 65535.0f / 175.0f + 0.5f);
 }
 
 /**************************************************************************/

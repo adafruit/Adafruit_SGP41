@@ -57,6 +57,11 @@
 /** Expected self-test pass value returned by the sensor. */
 #define SGP41_SELF_TEST_OK 0xD400
 
+/** Self-test bitmask for VOC pixel failure. */
+#define SGP41_SELF_TEST_VOC_FAIL_MASK 0x0001
+/** Self-test bitmask for NOx pixel failure. */
+#define SGP41_SELF_TEST_NOX_FAIL_MASK 0x0002
+
 /**************************************************************************/
 /*!
     @brief Class for communicating with the Sensirion SGP41 gas sensor.
@@ -69,18 +74,20 @@ class Adafruit_SGP41 {
 
   bool begin(uint8_t addr = SGP41_DEFAULT_ADDR, TwoWire* wire = &Wire);
 
-  bool executeConditioning(uint16_t* sraw_voc,
-                           uint16_t default_rh = SGP41_DEFAULT_HUMIDITY,
-                           uint16_t default_t = SGP41_DEFAULT_TEMPERATURE);
+  bool executeConditioning(uint16_t* sraw_voc, float default_rh = 50.0,
+                           float default_t = 25.0);
 
   bool measureRawSignals(uint16_t* sraw_voc, uint16_t* sraw_nox,
-                         uint16_t relative_humidity = SGP41_DEFAULT_HUMIDITY,
-                         uint16_t temperature = SGP41_DEFAULT_TEMPERATURE);
+                         float relative_humidity = 50.0,
+                         float temperature = 25.0);
 
   uint16_t executeSelfTest(void);
   bool turnHeaterOff(void);
   bool getSerialNumber(uint16_t serial_number[3]);
   bool softReset(void);
+
+  static uint16_t humidityToTicks(float humidity);
+  static uint16_t temperatureToTicks(float temperature);
 
  private:
   bool _writeCommand(uint16_t command, const uint16_t* data_words = nullptr,
